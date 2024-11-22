@@ -1,0 +1,76 @@
+<% include partials/head %>
+  <link rel="stylesheet" href="css/download.css">
+  </head>
+
+  <body>
+    <% include partials/header %>
+      <div class="container">
+        <div class="row">
+          <div class="card ">
+            <div class="card-body">
+              <h5 class="card-title">Centro: <%= user.nombreCentro %>
+              </h5>
+              <h5 class="card-title">Hola <%= user.nombre %>,
+              </h5>
+              <p>
+                <i class="fas fa-cloud-upload-alt" style="font-size: 24px"></i>
+                <i class="fa-solid fa-arrow-up-from-bracket" style="font-size: 24px"></i>
+                Esta es la utilidad de recogida de los dos CMFs.
+                Uno, el de <b>octubre de 2023</b> y el otro el de <b>octubre de 2024</b>. <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;• Una vez seleccionado cada uno de los CMF, pulsa el botón de enviar. <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;• Finalizado el envío de los dos excel, pulsa el botón de salir.
+               
+                <br><b> NOTA 1: </b><i>en caso de no tener el CMF de octubre de 2023, enviar al menos el de octubre de 2024.</i>
+          
+                <br><b> NOTA 2: </b><i>Los archivos CMF se identifican de este modo: </i><br>
+                  &nbsp;&nbsp;&nbsp;&nbsp;• el de octubre 2023 por:  &nbsp; CMF_xxxxxxx_nombrecentro_<b>202310</b>.xlsx <br>
+                  &nbsp;&nbsp;&nbsp;&nbsp;• el de octubre 2024 por:  &nbsp; CMF_xxxxxxx_nombrecentro_<b>202410</b>.xlsx.
+                
+                <br>
+                Gracias por contribuir a que <img src="/img/logovisio@.png" alt="logovision@" width="114" height="35">
+                sea cada día más eficaz.
+              </p>
+              <% if(message){ %>
+                <div class="alert alert-danger">
+                  <%= message %>
+                </div>
+                <% } %>
+                  <% if(loadedFiles){ %>
+                    <div class="alert alert-info">
+                      Excel subidos:
+                      <table>
+                        <% for(var i=0; i < loadedFiles.length; i++) { %>
+                          <tr>
+                            <td>
+                              <%= loadedFiles[i] %>
+                            </td>
+                          </tr>
+                          <% } %>
+                      </table>
+                    </div>
+                    <% }%>
+                      <hr />
+                      <form action="/files" method="post" enctype="multipart/form-data">
+                        <div class="mb-3 col-7">
+                          <div class=" input-group">
+                            <input type="file" class="form-control" name="file2load" id="inputGroupFile04"
+                              accept=".xlsx">
+                            <button class="btn btn-primary" type="submit" id="inputGroupFileAddon04">Enviar</button>
+                          </div>
+                        </div>
+                      </form>
+                      <a href="/logout" class="btn btn-primary btn-sm">SALIR</a>
+                      <% if (admin){ %>
+                        <a href="/panel" class="btn btn-info btn-sm">PANEL DE CONTROL</a>
+                        <% } %>
+            </div>
+            <div class="card-footer mx-auto">
+            </div>
+          </div>
+        </div>
+      </div>
+      <% include partials/footer %>
+
+  </body>
+
+  </html>

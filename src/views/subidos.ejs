@@ -1,0 +1,53 @@
+<% include partials/head %>
+  </head>
+
+  <body>
+    <% include partials/header %>
+
+      <div class="container-fluid col-10">
+        <h5 class="text-center"><a class="btn btn-primary" href="/panel">Volver a Panel de Control</a></h5>
+
+        <div class="row col-10">
+          <div>
+            <table id="tablaRows" class="table table-striped table-responsible">
+              <thead>
+                <tr>
+                  <td>Centro</td>
+                  <td>Nombre Centro</td>
+                  <td>CMF 2020</td>
+                  <td>CMF 2021</td>    
+                </tr>
+              </thead>
+              
+              <tbody>
+                <% if (rows) { %>
+                  <% for(var i=0; i < rows.length; i++) { %>
+                    <tr>
+                      <td>
+                        <%= rows[i].codigo %>
+                      </td>
+                      <td>
+                        <%= rows[i].nombreCentro %>
+                      </td>
+                      <td>
+                        <%= rows[i].cmf2020 %>
+                      </td>
+                      <td>
+                        <%= rows[i].cmf2021 %>
+                      </td>
+                    </tr>
+                    <% } %>
+                      <% } %>
+              </tbody>
+            </table>
+          </div>
+          <div id="contenedorForm"></div>
+        </div>
+      </div>
+      <% include partials/footer %>
+      
+        <script src="js/tblUtils.js"></script>
+        <!-- <script src="js/funcionesTbl.js"></script>
+ -->
+        
+  </body>

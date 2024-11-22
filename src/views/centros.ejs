@@ -1,0 +1,83 @@
+<% include partials/head %>
+  </head>
+
+  <body>
+    <% include partials/header %>
+
+      <div class="container-fluid mx-2">
+
+        <h5 class="text-center"><a class="btn btn-primary" href="/panel">Volver</a></h5>
+        <div class="row ">
+
+          <div class="">
+            <table id="tablaRows" class="table table-striped" style="width:100%">
+              <thead>
+                <tr>
+                  <th>Código</th>
+                  <th>Nombre Centro</th>
+                  <th>Email</th>
+                  <th>Móvil</th>
+                  <th>Director</th>
+                  <th>Nombre</th>
+                  <th>Clave</th>
+                  <th>Role</th>
+                  <th class="text-center">Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% if(message){ %>
+                  <% if(message.length > 0 ){ %>
+                    <div class="alert alert-danger">
+                      <%= message %>
+                    </div>
+                    <% } %>
+                      <% } %>
+                        <% if (centros) { %>
+                          <% for(var i=0; i < centros.length; i++) { %>
+                            <tr>
+                              <td>
+                                <%= centros[i].codigo %>
+                              </td>
+                              <td>
+                                <%= centros[i].nombreCentro %>
+                              <td>
+                                <%= centros[i].email %>
+                              </td>
+                              <td>
+                                <%= centros[i].movil %>
+                              </td>
+                              <td>
+                                <%= centros[i].director %>
+                              </td>
+                              <td>
+                                <%= centros[i].nombre %>
+                              </td>
+                              <td>
+                                <%= centros[i].clave %>
+                              </td>
+                              <td>
+                                <%= centros[i].role %>
+                              </td>
+                              <td>
+                                <div class='text-center'>
+                                  <a class="btn btn-danger" href="/delete/<%= centros[i].codigo %>">
+                                    <i class="bi bi-trash-fill"></i>
+                                  </a>
+
+                                </div>
+                              </td>
+                            </tr>
+                            <% } %>
+                              <% } %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      </div>
+      <% include partials/footer %>
+
+        <script src="js/tblUtils.js"></script>
+
+  </body>

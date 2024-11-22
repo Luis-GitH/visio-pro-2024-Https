@@ -1,0 +1,44 @@
+
+  <% include partials/head %>
+  
+</head>
+  <body class="signup">
+    <% include partials/header %>
+
+    <div class="container">
+      <div class="row"; height="80%">
+        <div class="col-sm-6 mx-auto">
+          <div class="card mt-5">
+            <div class="card-body">
+              <!-- messages -->
+              <h1 class="text-center">
+                <span class="fa fa-sign-in"></span> Login
+              </h1>
+              <% if (message.length > 0) { %>
+              <div class="alert alert-danger"><%= message %></div>
+              <% } %>
+
+              <!-- form -->
+              <form action="/login" method="post">
+                <div class="form-group">
+                  <label for="codigo">Centro</label>
+                  <input type="codigo" name="codigo" class="form-control" placeholder="número del centro" />
+                </div>
+                <div class="form-group mt-2">
+                  <label for="password">Clave</label>
+                  <input type="password" name="password" class="form-control" />
+
+                </div class="mx-auto">
+                <input type="submit" class="btn btn-primary mt-2" value="Entrar"/>
+              
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div >
+      <% include partials/footer %>
+    </div>
+  </body>
+</html>

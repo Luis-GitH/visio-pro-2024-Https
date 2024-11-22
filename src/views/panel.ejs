@@ -1,0 +1,42 @@
+<% include partials/head %>
+  </head>
+
+  <body>
+    <% include partials/header %>
+      <div class='container mx-auto '>
+        <hr>
+        <h2 class="text-center">PANEL DE CONTROL</h2>
+        <hr>
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-header mb-2">Información de actividad</h5>
+            <p class="card-text">
+              &nbsp;&nbsp;Centros que han subido datos . . . : <%= data[0] %> <br>
+            </p>
+            <p class="card-header">Alumnos disponibles por motor:</p>
+            <p>
+              &nbsp;&nbsp;&nbsp;&nbsp;Matemáticas. . : <%= data[1] %> <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;Lectura . . . . . . : <%= data[2] %> <br>
+                  &nbsp;&nbsp;&nbsp;&nbsp;Inglés . . . . . . . : <%= data[3] %> <br>
+            </p>
+            <p class="mx-auto">
+              <a class="btn btn-info btn-sm" href="/centros">Listado de Centros</a>
+              <a class="btn btn-info btn-sm" href="/cmfs">Excel CMFs subidos</a>
+              <a class="btn btn-info btn-sm" href="/subidos">Centros que han subido CMFs</a>
+            </p>
+            <p>
+              <a class="btn btn-primary btn-sm" href="/logout">Salir</a>
+              <a class="btn btn-primary btn-sm" href="/download">SUBIR CMFs al servidor</a>
+              <a class="btn btn-success btn-sm" href="/sql2e">Exportar excel con los datos</a>
+              <a class="btn btn-danger btn-sm" href="/upload">Subir de Upload</a>
+            <p>
+
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <% include partials/footer %>
+  </body>
+
+  </html>

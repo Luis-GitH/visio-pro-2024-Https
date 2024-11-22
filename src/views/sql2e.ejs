@@ -1,0 +1,41 @@
+<% include partials/head %>
+  </head>
+
+  <body>
+    <% include partials/header %>
+      <div class='container mx-auto '>
+        <hr>
+
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-header mb-2">Informativo</h5>
+
+            <p class="card-header">Generación de excel para cálculo de las medias de los centros</p>
+            <p class="card-text">
+              <% if(resultado == true ){ %>
+                <div class="alert alert-success" role="alert">
+                  &nbsp;&nbsp;&nbsp;&nbsp;Se ha generado el excel <b>sql2excel.xlsx </b> y enviado el mismo desde
+                  <b>gestion@visiona.pro</b> a tú dirección de correo. <br>
+                  &nbsp;&nbsp;&nbsp;&nbsp;Revisa la bandeja de <b> <i> correo no deseado</i></b> si ves que no llega
+                  <br>
+                </div>
+                <% } else {%>
+                  <div class="alert alert-danger" role="alert">
+                    &nbsp;&nbsp;&nbsp;&nbsp;Ha habido un error y no se ha podido generar el excel y <br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;enviarlo por correo. Avisar del error 2024 via email a: <br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>gestion@visiona.pro</b>
+                  </div>
+                  <% } %>
+            </p>
+            <p class="mx-auto">
+
+              <a class="btn btn-primary btn-sm" href="/panel">Continuar</a>
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <% include partials/footer %>
+  </body>
+
+  </html>
