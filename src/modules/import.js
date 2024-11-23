@@ -47,7 +47,7 @@ async function procesarTodoUpload() {
     let resultado = 0;
     return new Promise((resolve, reject)=>{
         fs.readdir(UPLOAD, async (err, archivos) => {
-            if (err) { onError(err); return; }
+            if (err) { reject(err); return; }
             for(const archivo of archivos) {
                 if (archivo.substring(0, 3) === 'CMF') {
                     const i = archivo.lastIndexOf('_2') + 1
@@ -75,8 +75,8 @@ async function procesarTodoUpload() {
                     console.log(new Date().toISOString(), 'no es cmf', archivo);
                 }
             } 
+            return resolve(resultado);
         });
-        return resolve(resultado);
     })
 }
 /*************************************************************************************** 
