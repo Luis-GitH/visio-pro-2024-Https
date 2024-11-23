@@ -162,9 +162,10 @@ app.get('/upload', isLoggedInMiddleware, async (req, res) => {
 		const resultado = await procesarTodoUpload();
 		// f.loger('Salida user: ' + req.user.codigo, 'l'
 	
-		return res.render('upload', { resultado });
+		return res.render('upload', { resultado, error: false });
 	} catch (error) {
 		return res.render('upload', { 
+			resultado: 0,
 			error: error?.message || 'Error desconocido' 
 		});
 	}
