@@ -154,15 +154,20 @@ app.get('/logout', (req, res) => {
 
 // logout
 app.get('/upload', isLoggedInMiddleware, async (req, res) => {
-	// para sincroniacion rapida
-
-	console.log(new Date().toISOString(),'entramos en upload');
-	//		loginModel.addLogin([req.user.codigo, req.user.nombreCentro, 'Salida con CMFs subidos'])
-	const resultado = await procesarTodoUpload();
-	// f.loger('Salida user: ' + req.user.codigo, 'l'
-
-	res.render('upload', { resultado });
-	return;
+	try {
+		// para sincroniacion rapida
+	
+		console.log(new Date().toISOString(),'entramos en upload');
+		//		loginModel.addLogin([req.user.codigo, req.user.nombreCentro, 'Salida con CMFs subidos'])
+		const resultado = await procesarTodoUpload();
+		// f.loger('Salida user: ' + req.user.codigo, 'l'
+	
+		return res.render('upload', { resultado });
+	} catch (error) {
+		return res.render('upload', { 
+			error: error?.message || 'Error desconocido' 
+		});
+	}
 });
 
 // traemos los excels
