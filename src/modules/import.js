@@ -45,39 +45,39 @@ function procesarUpload(user, archivosAtratar) {
 // procesarTodoUpload() procesamos todos los archivos del directorio UPLOAD;
 async function procesarTodoUpload() {
     let resultado = 0;
-    fs.readdir(UPLOAD, function (err, archivos) {
-        if (err) { onError(err); return; }
-        archivos.forEach(archivo => {
-            if (archivo.substring(0, 3) === 'CMF') {
-                const i = archivo.lastIndexOf('_2') + 1
-                const yearMes = archivo.substring(i, i + 4) + '-' + archivo.substring(i + 4, i + 6)
-                cmfArr =
-                    ['upload', // quien lo sube
-                        archivo.substring(4, 12),    // centroCmf que se ha logueado
-                        archivo,
-                        yearMes,
-                        'Subido',
-                        moment().format(date_ES),
-                    ];
-                try {
-                    CmfModel.addCmf(cmfArr);
-                } catch (e) {
-                    console.log(new Date().toISOString(), 'error en import', archivo, e);
+    return new Promise((resolve, reject)=>{
+        fs.readdir(UPLOAD, async (err, archivos) => {
+            if (err) { onError(err); return; }
+            for(const archivo of archivos) {
+                if (archivo.substring(0, 3) === 'CMF') {
+                    const i = archivo.lastIndexOf('_2') + 1
+                    const yearMes = archivo.substring(i, i + 4) + '-' + archivo.substring(i + 4, i + 6)
+                    cmfArr =
+                        ['upload', // quien lo sube
+                            archivo.substring(4, 12),    // centroCmf que se ha logueado
+                            archivo,
+                            yearMes,
+                            'Subido',
+                            moment().format(date_ES),
+                        ];
+                    try {
+                        CmfModel.addCmf(cmfArr);
+                    } catch (e) {
+                        console.log(new Date().toISOString(), 'error en import', archivo, e);
+                    }
+                    try {
+                        await importaAlcanceMensual(UPLOAD, PROCESADOS, archivo);
+                        resultado++;
+                    } catch (error) {
+                        console.log(new Date().toISOString(), error)
+                    }
+                } else {
+                    console.log(new Date().toISOString(), 'no es cmf', archivo);
                 }
-                try {
-                    importaAlcanceMensual(UPLOAD, PROCESADOS, archivo);
-                    resultado++;
-                } catch (error) {
-                    console.log(new Date().toISOString(), error)
-                }
-            } else {
-                console.log(new Date().toISOString(), 'no es cmf', archivo);
-            }
+            } 
         });
-
-
-    });
-    return resultado;
+        return resolve(resultado);
+    })
 }
 /*************************************************************************************** 
  esta funcion importa los datos de alcance mensual de cada alumno de los tres motores

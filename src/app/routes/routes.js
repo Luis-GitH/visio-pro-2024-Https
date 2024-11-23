@@ -153,12 +153,12 @@ app.get('/logout', (req, res) => {
 });
 
 // logout
-app.get('/upload', isLoggedInMiddleware, (req, res) => {
+app.get('/upload', isLoggedInMiddleware, async (req, res) => {
 	// para sincroniacion rapida
 
 	console.log(new Date().toISOString(),'entramos en upload');
 	//		loginModel.addLogin([req.user.codigo, req.user.nombreCentro, 'Salida con CMFs subidos'])
-	const resultado =procesarTodoUpload();
+	const resultado = await procesarTodoUpload();
 	// f.loger('Salida user: ' + req.user.codigo, 'l'
 
 	res.render('upload', { resultado });
