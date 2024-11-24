@@ -10,25 +10,28 @@
           <div class="card-body">
             <h5 class="card-header mb-2">Informativo</h5>
 
-            <p class="card-header">Importados todos los datos de alumnos
-            </p>
             <p class="card-text">
               <% if(error) { %>
-                <div class="alert alert-danger"><% error %></div>
-              <% } %>
-              <% if(resultado >0){ %>
-                <div class="alert alert-success" role="alert">
-                  &nbsp;&nbsp;&nbsp;&nbsp;Se han importado <% resultado %> CMFs de <b>upload </b>
-                
-                  &nbsp;&nbsp;&nbsp;&nbsp;Revisa la bandeja de <b> <i> correo no deseado</i></b> si ves que no llega
-                  <br>
+                <div class="alert alert-danger">
+                  <% error %>
                 </div>
-                <% } else {%>
-                  <div class="alert alert-danger" role="alert">
-                    &nbsp;&nbsp;&nbsp;&nbsp;No hay CMFs para importar<br>
-                   
-                  </div>
-                  <% } %>
+                <% } %>
+                  <% if(resultado>0){ %>
+                    <div class="alert alert-success" role="alert">
+                      <p class="card-header">Importados todos los datos de alumnos
+                      </p>
+                      &nbsp;&nbsp;&nbsp;&nbsp;Se han importado <%= resultado %> CMFs de <b>upload </b>
+
+                        &nbsp;&nbsp;&nbsp;&nbsp;Revisa la bandeja de <b> <i> correo no deseado</i></b> si ves que no
+                        llega
+                        <br>
+                    </div>
+                    <% } else {%>
+                      <div class="alert alert-danger" role="alert">
+                        &nbsp;&nbsp;&nbsp;&nbsp;No hay CMFs para importar<br>
+
+                      </div>
+                      <% } %>
             </p>
             <p class="mx-auto">
 
