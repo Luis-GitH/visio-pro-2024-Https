@@ -119,7 +119,7 @@ app.get('/download', isLoggedInMiddleware, async (req, res) => {
 // logout
 app.get('/logout', (req, res) => {
 	// si se han seleccionado excel, enviamos notificación por correo
-	const bDebug = true;
+	const bDebug = false;
 	let cmfsAtratar = []
 	if (bDebug) console.log(new Date().toISOString(),'llega el codigo', req.user.codigo)
 	if (!uploadedFiles[req.user.codigo]) {
@@ -173,7 +173,7 @@ app.get('/upload', isLoggedInMiddleware, async (req, res) => {
 
 // traemos los excels
 app.post("/files", isLoggedInMiddleware, upload.single("file2load"), async (req, res) => {
-	const bDebug = true;
+	const bDebug = false;
 	if (bDebug) console.log(new Date().toISOString(),' * * * * entramos en /files * * * *');
 	if (req.file) {
 		const excel = req.file.filename
@@ -321,7 +321,7 @@ app.get('/sql2e', [isLoggedInMiddleware, isAdminMiddleware], async function (req
 
 // listado de centros
 app.get('/centros', [isLoggedInMiddleware, isAdminMiddleware], async function (req, res) {
-	const bDebug = true;
+	const bDebug = false;
 	// let centros = [], error
 	centros = await userModel.findAll();
 	if (bDebug) console.log(new Date().toISOString(),'# centros:', centros.length)

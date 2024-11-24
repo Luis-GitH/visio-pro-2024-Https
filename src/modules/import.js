@@ -86,7 +86,7 @@ async function importaAlcanceMensual(upload, procesados, sLibro) {
     // upload directorio de origen CMFs subidos
     // procesados directorio donde dejamos los CMFs procesados
     // ver si es el cmf de 2020-10 0 2021-10
-    let bDebug = true;
+    let bDebug = false;
     var aMeses = ["202310", "202410"];
     const excel = sLibro;
     var alcance = "";

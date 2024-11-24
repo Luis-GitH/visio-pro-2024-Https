@@ -21,7 +21,7 @@ module.exports = {
 
   /////////  Informe para el panel de control
   async resumenAlumnos() {
-    let bDebug = true;
+    let bDebug = false;
     let result = []
     const qCentros = "SELECT count(DISTINCT centro) as numero FROM alcanceMensual"
     //const qMates = "SELECT count(DISTINCT alumno) as numero FROM alcanceMensual WHERE materia='M'"
@@ -60,7 +60,7 @@ module.exports = {
   },
 
   async queryWhere(where) {
-    let bDebug = true;
+    let bDebug = false;
     let fields = ['centro', 'materia', 'alumno', 'nivelInicio', '2022_11', '2022_12', '2023_01', '2023_02', '2023_03', '2023_04', '2023_05', '2023_06', '2023_07', '2023_08', '2023_09', '2023_10', '2023_11', '2023_12', '2024_01', '2024_02', '2024_03', '2024_04', '2024_05', '2024_06', '2024_07', '2024_08', '2024_09', '2024_10'];
 
     let conn
