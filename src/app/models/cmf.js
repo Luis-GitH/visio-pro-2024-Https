@@ -28,8 +28,8 @@ module.exports = {
       conn = await pool.fetchConn();
       const sql = `SELECT centroCmf AS codigo,  
 	                   (SUBSTRING_INDEX(SUBSTR(cmf FROM 14 FOR 40), '_0', 1)) AS nombreCentro,
-	                   COUNT(IF( mes ='2020-10',mes, NULL)) AS cmf2020,
-	                    COUNT(IF(mes='2021-10',mes, NULL)) as cmf2021
+	                   COUNT(IF( mes ='2023-10',mes, NULL)) AS cmf2023,
+	                    COUNT(IF(mes='2024-10',mes, NULL)) as cmf2024
                   FROM cmfs
                   GROUP BY centroCmf`;
       rows = await conn.query(sql);
