@@ -128,7 +128,7 @@ async function importaAlcanceMensual(upload, procesados, sLibro) {
         let xCentro;
         // console.log(new Date().toISOString(),'env_node: ', env_node);
         if (env_node === "prod") {
-            // console.log(new Date().toISOString(),'scentro estamos en produccion');
+            console.log(new Date().toISOString(),'scentro estamos en produccion');
             xCentro = crypto.createHash('md5').update(sCentro).digest('hex');
         } else {
             console.log(new Date().toISOString(), 'estamos en desarrollo');
@@ -165,7 +165,7 @@ async function importaAlcanceMensual(upload, procesados, sLibro) {
                 }
             } catch (e) {
                 // f.loger(e.text)
-                // f.loger(`Error en: ${sLibro}, hoja: ${modulo[1][im]}, celda: B${i}, nknombre typo ${typeof nknombre}`)
+                 f.loger(`Error en: ${sLibro}, hoja: ${modulo[1][im]}, celda: B${i}, nknombre typo ${typeof nknombre}`)
                 // salimos no hay nombre válido hemos llegado al final
                 break;
             }
