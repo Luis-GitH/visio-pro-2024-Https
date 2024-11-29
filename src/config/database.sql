@@ -1,15 +1,6 @@
 CREATE DATABASE centros;
 
-CREATE TABLE `cmfs` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `centro` varchar(8) DEFAULT NULL,
-  `cmf` varchar(100) DEFAULT NULL,
-  `mes` varchar(15) DEFAULT NULL,
-  `estado` varchar(50) DEFAULT NULL,
-  `fecha` timestamp NOT NULL DEFAULT current_timestamp(),
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `cmf` (`cmf`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+c
 
 CREATE TABLE `logins` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -104,6 +95,18 @@ CREATE TABLE `alcanceMensual` (
   PRIMARY KEY (`centro`,`materia`,`alumno`),
   UNIQUE KEY `nkey` (`centro`,`materia`,`alumno`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+
+CREATE TABLE IF NOT EXISTS `cmfs` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `centro` varchar(8) DEFAULT NULL,
+  `centroCmf` varchar(8) DEFAULT NULL,
+  `cmf` varchar(100) DEFAULT NULL,
+  `mes` varchar(15) DEFAULT NULL,
+  `estado` varchar(50) DEFAULT NULL,
+  `fecha` timestamp NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `cmf` (`cmf`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
 
 CREATE TABLE `estado` (
   `id` int(11) NOT NULL AUTO_INCREMENT,

@@ -32,9 +32,9 @@ mariadb-dump -u USUARIO -p NOMBRE_BD > ./dbs.sql
 
 ### **Importar Exportar copia**
 
-mysql -u visiona -p centros < dbs.sql;
+mysql -u visiona -p centros_2024 < dbs.sql;
 
-mysql -u visiona -p centros < dbs.sql;
+mysql -u visiona -p centros_2024 < dbs.sql;
 
 SHOW DATABASES;  
 SELECT user from mysql.user;  
