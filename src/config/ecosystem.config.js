@@ -1,7 +1,7 @@
 module.exports = {
   apps: [{
     name: "visiona",
-    script: './src/server.js',
+    script: './server.js',
     watch: './src',
     // Delay between restart
     watch_delay: 1000,

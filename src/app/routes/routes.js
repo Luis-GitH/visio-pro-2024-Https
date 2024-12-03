@@ -13,7 +13,7 @@ const {
   procesarTodoUpload,
   sql2excel,
 } = require("../../modules/import");
-const nodemailer = require("nodemailer");
+// const nodemailer = require("nodemailer");
 const { jConfigNoReplay, jConfigGestion } = require("../../config/mailer");
 const multer = require("multer");
 const jwt = require("jsonwebtoken");
@@ -166,7 +166,7 @@ module.exports = (app, passport) => {
       if (bDebug)
         console.log(new Date().toISOString(), "cmfsAtratar:", cmfsAtratar);
       const email = {
-        from: process.env.PRIVATE_noMAIL_USER, // Sender address
+        from: process.env.MAIL_ORIGEN, // Sender address
         to: "salvador.lopez@outlook.com", // List of recipients
         subject: `Notificacion de subidas de CMF's del Centro: ${req.user.nombreCentro}`, // Subject line
         text: texto,
@@ -376,7 +376,7 @@ module.exports = (app, passport) => {
       try {
         await sql2excel();
         const email = {
-          from: process.env.PRIVATE_GESTION_MAIL_USER, // Sender address
+          from: process.env.MAIL_ORIGEN, // Sender address
           to: `${req.user.email}`, // List of recipients
           subject: `Actualización de los datos de alcance mensual`, // Subject line
           html: `<h1>Hola ${req.user.nombre}, </h1><p> adjunto el excel actualizado!</p>`,

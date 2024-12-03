@@ -34,7 +34,7 @@ module.exports = {
                   GROUP BY centroCmf`;
       rows = await conn.query(sql);
     } catch (e) {
-      f.loger(`Error en Cmf.subidos() ${e.text}`)
+      f.loger( `Error en Cmf.subidos() ${e.text}`)
     } finally {
       if (conn) conn.end();
     }
@@ -69,7 +69,7 @@ module.exports = {
     try {
       conn = await pool.fetchConn();
       const res = await conn.query("DELETE FROM cmfs WHERE cmf = '" + excel + "'");
-      f.loger(`cmf.DELETE info', ${excel} - ${JSON.stringify(res)} `, 'c');
+      f.loger(`cmf.DELETE ', ${excel} - ${JSON.stringify(res)} `, 'c');
     } catch (e) {
       f.loger(`Error en cmf.DELETE', ${e.text}`);
     }finally{

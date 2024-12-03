@@ -2,6 +2,8 @@ require('dotenv').config();
 var moment = require('moment'); // require
 var date_ES="YYYY-MM-DD HH:mm:ss";
 
+const f = require("./modules/funcionesLog.js");
+
 const express = require('express'),
   path = require('path'),
   passport = require('passport'),
@@ -38,10 +40,16 @@ app.use(flash());
 // routes
 require('./app/routes/routes')(app, passport);
 
+// correo
+const nodemailer = require("nodemailer");
+const checkIp= require('./modules/ipModule')
 // static files
 app.use(express.static(path.join(__dirname, 'public')));
 
 // start the server
-app.listen(app.get('port'), () => {
-  console.log(new Date().toISOString(),'server on port ', app.get('port'));
-});
+// app.listen(app.get('port'), () => {
+//   console.log(new Date().toISOString(),'server on port ', app.get('port'));
+// });
+
+
+ module.exports=app

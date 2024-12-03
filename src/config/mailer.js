@@ -1,8 +1,8 @@
 module.exports.jConfigNoReplay = {
   service: 'yahoo',
   auth: {
-    user: process.env.PRIVATE_noMAIL_USER,
-    pass: process.env.PRIVATE_noMAIL_PASS,
+    user: process.env.MAIL_ORIGEN,
+    pass: process.env.MAIL_PASS,
   }
 };
 
@@ -10,8 +10,8 @@ module.exports.jConfigNoReplay = {
 module.exports.jConfigGestion= {
   service: 'yahoo',
   auth: {
-    user: process.env.PRIVATE_GESTION_MAIL_USER,
-    pass: process.env.PRIVATE_GESTION_MAIL_PASS,
+    user: process.env.MAIL_ORIGEN,
+    pass: process.env.MAIL_PASS,
   }
 };
  

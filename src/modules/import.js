@@ -1,16 +1,20 @@
-const process = require('process');
-console.log(new Date().toISOString(), 'process.env.NODE_ENV=', process.env.NODE_ENV)
-const env_node = process.env.NODE_ENV || "prod"; // prod||dev
+const process = require("process");
 
+const env_node = process.env.NODE_ENV || "produccion"; // prod||dev
+console.log(
+    new Date().toISOString(),
+    "process.env.NODE_ENV=",
+    env_node
+);
 const XLSX = require("xlsx");
-const f = require("./funcionesLog.js");
-const fs = require('fs');
-var crypto = require('crypto');
-const moment = require('moment');
+// const f = require("./funcionesLog.js");
+const fs = require("fs");
+var crypto = require("crypto");
+const moment = require("moment");
 const date_ES = "YYYY-MM-DD HH:mm:ss";
 
-const nivelModel = require('../app/models/alcanceMensual');
-const CmfModel = require('../app/models/cmf');
+const nivelModel = require("../app/models/alcanceMensual");
+const CmfModel = require("../app/models/cmf");
 const UPLOAD = "upload/";
 const PROCESADOS = "procesados/";
 
@@ -26,58 +30,75 @@ const columnas1 = [2, 35, 84, 21, 28, 99];
 function procesarUpload(user, archivosAtratar) {
     if (archivosAtratar) {
         fs.readdir(UPLOAD, function (err, archivos) {
-            if (err) { onError(err); return; }
-            archivos.forEach(archivo => {
-                if (archivosAtratar.includes(archivo)) { // verificamos que esta en la lista importada
+            if (err) {
+                onError(err);
+                return;
+            }
+            archivos.forEach((archivo) => {
+                if (archivosAtratar.includes(archivo)) {
+                    // verificamos que esta en la lista importada
                     try {
                         importaAlcanceMensual(UPLOAD, PROCESADOS, archivo);
                     } catch (error) {
-                        console.log(new Date().toISOString(), error)
+                        console.log(new Date().toISOString(), error);
                     }
                 }
             });
         });
     } else {
-        console.log(new Date().toISOString(), 'sin archivos que tratar del usuario: ', user)
+        console.log(
+            new Date().toISOString(),
+            "sin archivos que tratar del usuario: ",
+            user
+        );
     }
 }
 
 // procesarTodoUpload() procesamos todos los archivos del directorio UPLOAD;
 async function procesarTodoUpload() {
     let resultado = 0;
-    return new Promise((resolve, reject)=>{
+    return new Promise((resolve, reject) => {
         fs.readdir(UPLOAD, async (err, archivos) => {
-            if (err) { reject(err); return; }
-            for(const archivo of archivos) {
-                if (archivo.substring(0, 3) === 'CMF') {
-                    const i = archivo.lastIndexOf('_2') + 1
-                    const yearMes = archivo.substring(i, i + 4) + '-' + archivo.substring(i + 4, i + 6)
-                    cmfArr =
-                        ['upload', // quien lo sube
-                            archivo.substring(4, 12),    // centroCmf que se ha logueado
-                            archivo,
-                            yearMes,
-                            'Subido',
-                            moment().format(date_ES),
-                        ];
+            if (err) {
+                reject(err);
+                return;
+            }
+            for (const archivo of archivos) {
+                if (archivo.substring(0, 3) === "CMF") {
+                    const i = archivo.lastIndexOf("_2") + 1;
+                    const yearMes =
+                        archivo.substring(i, i + 4) + "-" + archivo.substring(i + 4, i + 6);
+                    cmfArr = [
+                        "upload", // quien lo sube
+                        archivo.substring(4, 12), // centroCmf que se ha logueado
+                        archivo,
+                        yearMes,
+                        "Subido",
+                        moment().format(date_ES),
+                    ];
                     try {
                         CmfModel.addCmf(cmfArr);
                     } catch (e) {
-                        console.log(new Date().toISOString(), 'error en import', archivo, e);
+                        console.log(
+                            new Date().toISOString(),
+                            "error en import",
+                            archivo,
+                            e
+                        );
                     }
                     try {
                         await importaAlcanceMensual(UPLOAD, PROCESADOS, archivo);
                         resultado++;
                     } catch (error) {
-                        console.log(new Date().toISOString(), error)
+                        console.log(new Date().toISOString(), error);
                     }
                 } else {
-                    console.log(new Date().toISOString(), 'no es cmf', archivo);
+                    console.log(new Date().toISOString(), "no es cmf", archivo);
                 }
-            } 
+            }
             return resolve(resultado);
         });
-    })
+    });
 }
 /*************************************************************************************** 
  esta funcion importa los datos de alcance mensual de cada alumno de los tres motores
@@ -104,7 +125,11 @@ async function importaAlcanceMensual(upload, procesados, sLibro) {
     try {
         var wb = XLSX.readFile(upload + sLibro);
     } catch (e) {
-        console.log(new Date().toISOString(), "no se cargo el libro: ", upload + sLibro);
+        console.log(
+            new Date().toISOString(),
+            "no se cargo el libro: ",
+            upload + sLibro
+        );
         return;
     }
     for (let im = 0; im < modulo[0].length; im++) {
@@ -117,21 +142,23 @@ async function importaAlcanceMensual(upload, procesados, sLibro) {
         if (ws == undefined) return; // no hay mas hojas
         const sCentro = ws["P7"].v;
         // comenzamos la importacion
-        if (bDebug) console.log(new Date().toISOString(),
-            "Excel a tratar:",
-            sLibro,
-            ", hoja:",
-            modulo[0][im],
-            " Centro:",
-            sCentro
-        );
+        if (bDebug)
+            console.log(
+                new Date().toISOString(),
+                "Excel a tratar:",
+                sLibro,
+                ", hoja:",
+                modulo[0][im],
+                " Centro:",
+                sCentro
+            );
         let xCentro;
-        // console.log(new Date().toISOString(),'env_node: ', env_node);
-        if (env_node === "prod") {
-            console.log(new Date().toISOString(),'scentro estamos en produccion');
-            xCentro = crypto.createHash('md5').update(sCentro).digest('hex');
+        // console.log(new Date().toISOString(),'env_node: ', );
+        if (env_node === "produccion") {
+            console.log(new Date().toISOString(), "scentro estamos en produccion");
+            xCentro = crypto.createHash("md5").update(sCentro).digest("hex");
         } else {
-            console.log(new Date().toISOString(), 'estamos en desarrollo');
+            console.log(new Date().toISOString(), "estamos en desarrollo");
             xCentro = sCentro;
         }
         // fila 15 cabecera de meses
@@ -150,31 +177,38 @@ async function importaAlcanceMensual(upload, procesados, sLibro) {
             "CF"
         );
 
-
         var data = [];
         var tmp = [];
-        var regex = /\d+[A-Z]|[A-Z]+/ig;
+        var regex = /\d+[A-Z]|[A-Z]+/gi;
         let nknombre;
         for (let i = 16; i < 900; i += 2) {
             try {
+                if (ws["B" + i] === undefined) {
+                    // f.loger(`Llegamos al final de la hoja en: ${sLibro}, hoja: ${modulo[1][im]}, celda: B${i}`)
+                    break;
+                }
                 nknombre = ws["B" + i].v;
                 if (nknombre === "BAJAS DE ALUMNOS:") continue;
                 if (nknombre === "") break;
-                if (env_node === "prod") {
-                    nknombre = crypto.createHash('md5').update(nknombre).digest('hex');
+                if (env_node === "produccion") {
+                    nknombre = crypto.createHash("md5").update(nknombre).digest("hex");
                 }
             } catch (e) {
                 // f.loger(e.text)
-                 f.loger(`Error en: ${sLibro}, hoja: ${modulo[1][im]}, celda: B${i}, nknombre typo ${typeof nknombre}`)
+                f.loger(
+                    `Error en: ${sLibro}, hoja: ${modulo[1][im]
+                    }, celda: B${i}, nknombre typo ${typeof nknombre}`
+                );
                 // salimos no hay nombre válido hemos llegado al final
+                //cambiamos por undefined
                 break;
             }
             try {
-                tmp = ws["AI" + i].v
+                tmp = ws["AI" + i].v;
                 tmp = tmp.match(regex);
                 nKinicio = tmp;
             } catch (e) {
-                if (bDebug) console.log(new Date().toISOString(), e.text)
+                if (bDebug) console.log(new Date().toISOString(), e.text);
                 nKinicio = " ";
             }
             var n = 0,
@@ -183,52 +217,79 @@ async function importaAlcanceMensual(upload, procesados, sLibro) {
             mesHeader.forEach(function (mes) {
                 // separamos el nivel de los números
                 try {
-                    switch (process.env.TABLET) {
-                        case "0":
-                            // se extraen los alumnos sin tablet hojas > 0
-                            if (ws[mes + (i + 1)].v > 0) {
-                                tmp = ws[mes + i].v;
-                                tmp = tmp.match(regex);
-                            } else {
-                                tmp = " "
-                            }
-                            break;
-                        case "1":
-                            // se extraen los alumnos con tablet hokas consumidas = 0
-                            if (ws[mes + (i + 1)].v > 0) {
-                                tmp = " "
-                            } else {
-                                tmp = ws[mes + i].v;
-                                tmp = tmp.match(regex);
-                            }
-                            break;
-                        case "2":
-                            // se extraen todos los alumnos
-                            tmp = ws[mes + i].v;
-                            tmp = tmp.match(regex);
-                            break;
-                        default:
-                            // esto es un error 
-                            console.log(new Date().toISOString(), "error en variable de entorno: TABLET. no definida")
-                            tmp = " ";
-                            break;
-                    }
+                    if (ws[mes + i].v === "'") {
+                        f.loger(
+                            `Celda vacia: ${sLibro}, hoja: ${modulo[1][im]}, celda: ${mes}${i}) `
+                        );
+                        tmp = " ";
+                    } else {
 
+                        switch (process.env.TABLET) {
+
+                            case "0":
+                                // se extraen los alumnos sin tablet hojas > 0
+                                if (ws[mes + (i + 1)].v > 0) {
+                                    tmp = ws[mes + i].v;
+                                    tmp = tmp.match(regex);
+                                } else {
+                                    tmp = " ";
+                                }
+                                break;
+
+                            case "1":
+                                // se extraen los alumnos con tablet hokas consumidas = 0
+                                if (ws[mes + (i + 1)].v > 0) {
+                                    tmp = " ";
+                                } else {
+                                    tmp = ws[mes + i].v;
+                                    tmp = tmp.match(regex);
+                                }
+                                break;
+
+                            case "2":
+                                // se extraen todos los alumnos
+                                tmp = ws[mes + i].v;
+                                tmp = tmp.match(regex);
+                                break;
+
+                            default:
+                                // esto es un error
+                                console.log(
+                                    new Date().toISOString(),
+                                    "error en variable de entorno: TABLET. no definida"
+                                );
+                                tmp = " ";
+                                break;
+                        }
+                    }
                 } catch (e) {
                     if (bDebug) {
-                        console.log(new Date().toISOString(), e.text)
-                        console.log(new Date().toISOString(), 'en:', sLibro, ' hoja:', modulo[0][im], 'celda:' + mes + i, ' tipo: ', typeof tmp)
+                        console.log(new Date().toISOString(), e.text);
+                        console.log(
+                            new Date().toISOString(),
+                            "en:",
+                            sLibro,
+                            " hoja:",
+                            modulo[0][im],
+                            "celda:" + mes + i,
+                            " tipo: ",
+                            typeof tmp
+                        );
                     }
                     tmp = " ";
+
                 }
-                aMes[n] = tmp
-                if (bDebug) console.log(new Date().toISOString(), 'aMes[', n, ']:' + aMes[n])
+
+
+                aMes[n] = tmp;
+                if (bDebug)
+                    console.log(new Date().toISOString(), "aMes[", n, "]:" + aMes[n]);
                 n++;
             });
             if (aMes.length > 0) {
                 data = [];
                 data = [xCentro, modulo[1][im], nknombre, nKinicio, ...aMes];
-                data.push(moment().format(date_ES))
+                data.push(moment().format(date_ES));
                 //////// actualizamos la base de datos de alcanceMensual
                 nivelModel.alcanceMesUpdate(alcance, data);
             }
@@ -238,7 +299,7 @@ async function importaAlcanceMensual(upload, procesados, sLibro) {
     try {
         fs.renameSync(upload + sLibro, procesados + sLibro);
     } catch (error) {
-        f.loger(error)
+        f.loger(error);
     }
 }
 
@@ -258,7 +319,7 @@ async function sql2excel() {
         await book_append_table(wb, modulo[2][z], modulo[1][z]);
     }
     XLSX.writeFile(wb, "mysql2excel.xlsx");
-};
+}
 
 module.exports.sql2excel = sql2excel;
 module.exports.procesarUpload = procesarUpload;

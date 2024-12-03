@@ -2,9 +2,9 @@
 
 ## **Arranque con pm2**
 
-pm2 start ecosystem.config.js --env desarrollo
+pm2 start './src/config/ecosystem.config.js'   // --env desarrollo
 
-pm2 start ecosystem.config.js --env produccion
+pm2 start './src/config/ecosystem.config.js'   // --env produccion
 
 ### comandos utiles
 
