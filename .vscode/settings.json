@@ -34,7 +34,20 @@
       "name": "visiona",
       "database": "centros",
       "username": "visiona",
-      "askForPassword": true
+      "password": "1337"
+    },
+    {
+      "mysqlOptions": {
+        "authProtocol": "default",
+        "enableSsl": "Disabled"
+      },
+      "previewLimit": 50,
+      "server": "localhost",
+      "port": 3306,
+      "driver": "MariaDB",
+      "name": "mariaVisiona",
+      "database": "centros_2024",
+      "username": "visiona"
     }
   ]
 }

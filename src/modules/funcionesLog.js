@@ -1,45 +1,60 @@
-const moment = require("moment"); // require
+const dayjs = require("dayjs"); // require
 const fs = require("fs");
 
 // func = 'd'-> database.log, 'l' general 'x' csv
+/**
+ * Función para escribir en el loger en el directorio de logs
+ * 
+ * @param {string} log - db: databases.log,
+        err: errores.log,
+        trace: trace.log,
+        niveles: alcanceMes.log,
+        cmf: cmfs.log,
+        user: users.log,
+        login: logins.log,
+        info: info.log;
+*/
 function loger(texto, log) {
-    const fecha = moment().format("YYYY/MM/DD HH:mm:ss "),
-        rutaDb = "log/databases.log",
-        rutax = "log/errores.log",
-        rutaTrace = "log/trace.log",
-        rutaNiveles = "log/model.AlcanceMes.log",
-        rutaCmf = "log/model.cmfs.log",
-        rutaUser = "log/model.users.log",
-        rutaLogin = "log/model.logins.log";
+    const fecha = dayjs().format("YYYY/MM/DD HH:mm:ss "),
+        db = "logs/databases.log",
+        er = "logs/errores.log",
+        trace = "logs/trace.log",
+        niveles = "logs/AlcanceMes.log",
+        cmf = "logs/cmfs.log",
+        user = "logs/users.log",
+        login = "logs/logins.log",
+        info = "logs/info.log";
 
     try {
         switch (log) {
-            case "c": // cmf Log
-                fs.appendFileSync(rutaCmf, fecha + " " + texto + `\n`);
+            case "cmf": // cmf Log
+                fs.appendFileSync(cmf, fecha + " " + texto + `\n`);
                 break;
 
-            case "d": // database log
-                fs.appendFileSync(rutaDb, `${fecha}  ${texto} \n`);
+            case "db": // database log
+                fs.appendFileSync(db, `${fecha}  ${texto} \n`);
                 break;
 
-            case "u": // model.user log
-                fs.appendFileSync(rutaUser, `${fecha}  ${texto} \n`);
+            case "user": // model.user log
+                fs.appendFileSync(user, `${fecha}  ${texto} \n`);
                 break;
 
-            case "n": // AlcanceMes Log
-                fs.appendFileSync(rutaNiveles, `${fecha}  ${texto} \n`);
+            case "niveles": // AlcanceMes Log
+                fs.appendFileSync(niveles, `${fecha}  ${texto} \n`);
                 break;
 
-            case "l": // Login Log
-                fs.appendFileSync(rutaLogin, `${fecha}  ${texto} \n`);
+            case "login": // Login Log
+                fs.appendFileSync(login, `${fecha}  ${texto} \n`);
                 break;
 
-            case "t": // trace log para seguimiento de valores
-                fs.appendFileSync(rutaTrace, `${fecha}  ${texto} \n`);
+            case "trace": // trace log para seguimiento de valores
+                fs.appendFileSync(trace, `${fecha}  ${texto} \n`);
                 break;
-
+            case "info":
+                fs.appendFileSync(info, `${fecha}  ${texto} \n`);
+                break;
             default: // los errores de todos
-                fs.appendFileSync(rutax, `${fecha}  ${texto} \n`);
+                fs.appendFileSync(er, `${fecha}  ${texto} \n`);
                 break;
         }
     } catch (e) {
@@ -65,18 +80,5 @@ function getNivel(cadena) {
         }
     }
 }
-function logear(tipoLog, texto) {
-    const fecha = moment().format("YYYY/MM/DD HH:mm:ss "),
-        rutaLogs = "log/info.log";
 
-    try {
-        fs.appendFileSync(rutaLogs, `${fecha} ${tipoLog} ${texto}\n`);
-    } catch (e) {
-        console.log(
-            new Date().toISOString(),
-            "¡OJO! Error en el loger",
-            e.text
-        );
-    }
-}
-module.exports = { loger: loger, logear: logear }; //, getNivel: getNivel };
+module.exports = { loger }; //, getNivel: getNivel };

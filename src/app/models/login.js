@@ -26,7 +26,7 @@ module.exports = {
       conn = await pool.fetchConn();
       await conn.query(sql);
     } catch (e) {  // como existe lo actualizamos
-      f.loger(`Error en addLogin() ${e}`);
+      f.loger(`Error en addLogin() ${e}`,'login');
     }finally{
       if (conn) conn.end();
     }

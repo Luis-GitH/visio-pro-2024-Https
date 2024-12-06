@@ -47,7 +47,7 @@ module.exports = {
       const sql = "SELECT * FROM users";
       rows = await conn.query(sql);
     } catch (err) {
-      f.loger(`Error en user.findAll(): ${err.text} `)
+      f.loger(`Error en user.findAll(): ${err.text} `,'user')
       rows = 'error';
     } finally {
       if (conn) conn.end()
@@ -61,9 +61,9 @@ module.exports = {
     try {
       conn = await pool.fetchConn();
       const res = await conn.query("DELETE FROM users WHERE codigo = '" + codigo + "'");
-      if (bDebug) f.loger(`user.DELETE info', ${codigo} - ${JSON.stringify(res)} `, 'u');
+      if (bDebug) f.loger(`user.DELETE info', ${codigo} - ${JSON.stringify(res)} `, 'user');
     } catch (e) {
-      f.loger(`Error en user.DELETE', ${e.message}`);
+      f.loger(`Error en user.DELETE', ${e.message}`,'user');
     } finally {
       if (conn) conn.end();
     }
@@ -89,18 +89,18 @@ module.exports = {
       // console.log(new Date().toISOString(),res)
       switch (res.affectedRows) {
         case 1:
-          f.loger(` user.addUsuario (${newUser[1]} )info: Alta`, 'u');
+          f.loger(` user.addUsuario (${newUser[1]} )info: Alta`, 'user');
           result = 'Alta correcta';
           break;
         case 2:
-          f.loger(` user.addUsuario (${newUser[1]} )info: Actualizado`, 'u');
+          f.loger(` user.addUsuario (${newUser[1]} )info: Actualizado`, 'user');
           result = 'Actualizado';
           break;
       }
     } catch (e) {
       f.loger(`Error user.addUsuario( ${newUser[1]}) info: ERROR ${e.text} 
       values: ${values} 
-      set: ${set}`);
+      set: ${set}`,'user');
       result = 'Error. Reintentar de nuevo'
     } finally {
       if (conn) conn.end();

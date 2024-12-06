@@ -41,7 +41,7 @@
                         <%= cmfs[i].estado %>
                       </td>
                       <td>
-                        <%= moment(cmfs[i].fecha).format(date_ES) %>
+                        <%= dayjs(cmfs[i].fecha).format(date_ES) %>
                       </td>
                     </tr>
                     <% } %>

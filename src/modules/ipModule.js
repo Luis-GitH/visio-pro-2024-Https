@@ -1,22 +1,12 @@
 require("dotenv").config();
 const process = require("process");
 const axios = require("axios");
-const nodemailer = require("nodemailer");
+const { enviarCorreo } = require("./eMailModule");
 const fs = require("fs");
-const f = require("./funcionesLog.js");
+const f = require("./funcionesLog");
 
 const env_node = process.env.NODE_ENV || "produccion"; // produccion||desarrollo
-f.logear("ARRANQUE:", `nuevo proceso en ${env_node}`);
-
-let eMailDestino = "";
-if (env_node === "produccion") {
-    eMailDestino = process.env.MAIL_AVISOS_PRODUCCION;
-} else {
-    eMailDestino = process.env.MAIL_AVISOS_DESARROLLO;
-}
-
-const eMailOrigen = process.env.MAIL_ORIGEN;
-const eMailPassword = process.env.MAIL_PASS;
+f.loger(`ARRANQUE DEL SERVIDOR: nuevo proceso en ${env_node}`,'info');
 
 let lastIP = "";
 
@@ -26,66 +16,48 @@ async function getPublicIP() {
         const response = await axios.get("https://api.ipify.org?format=json");
         return response.data.ip;
     } catch (error) {
-        console.error("Error al obtener la IP:", error);
-        f.logear("NO SE OBTIENE LA IP pubñica");
+        f.loger("Error al obtener la IP:" + error, 'err');
+        enviarCorreo(
+            "desarrollo",
+            "OJO, no se puede conseguir la IP",
+            "ipModule.getPublicIP"
+        );
         return null;
     }
 }
 
-// Función para enviar correo
-async function sendEmail(newIP) {
-    let transporter = nodemailer.createTransport({
-        service: "yahoo",
-        auth: {
-            user: eMailOrigen,
-            pass: eMailPassword,
-        },
-    });
-
-    let mailOptions = {
-        from: eMailOrigen,
-        to: eMailDestino,
-        subject: "Cambio de IP pública",
-        text: `Ha cambiado la IP de visiona.pro, la nueva IP es: ${newIP}`,
-    };
-
-    try {
-        await transporter.sendMail(mailOptions);
-        f.loger("CAMBIO IP: ", `Se ha cambiado la IP la nueva es: ${newIP}`);
-    } catch (error) {
-        f.loger("ERROR: Error al enviar correo de cambio de IP", error);
-    }
-}
 
 // Función principal
 async function checkIP() {
-    console.log("psamos");
+    f.loger("Entramos en checkIP()", "trace");
     const currentIP = await getPublicIP();
+    // Cargar la última IP establecida
     if (fs.existsSync("lastIP.txt")) {
         lastIP = fs.readFileSync("lastIP.txt", "utf8");
     }
     if (currentIP && currentIP !== lastIP) {
-        console.log(`IP cambiada: ${currentIP}`);
-        await sendEmail(currentIP);
+        console.log(
+            `La IP anterior: ${lastIP} se ha cambiado por: ${currentIP}`
+        );
+        f.logear(
+            "CAMBIO IP: ",
+            `Se ha cambiado la IP ${OldIP} la nueva es: ${newIP}`
+        );
+        enviarCorreo(
+            "Alerta",
+            `Ha cambiado la IP del router, era: ${lastIP}, \n la nueva IP es: ${currentIP} \n Hay que cambiarla en el dominio de visiona.pro`
+        );
         lastIP = currentIP;
-
-        try {
-            fs.writeFileSync("lastIP.txt", currentIP, "utf8");
-            console.log("Archivo escrito exitosamente");
-        } catch (error) {
-            console.error("Error al escribir el archivo:", error.message);
-        }
+        fs.writeFileSync("lastIP.txt", currentIP);
     }
 }
 
-// Cargar la última IP conocida
-if (fs.existsSync("lastIP.txt")) {
-    lastIP = fs.readFileSync("lastIP.txt", "utf8");
-}
+// // Cargar la última IP conocida
 
-// Ejecutar la verificación cada 30 minutos
-setInterval(checkIP, 1 * 60 * 1000);
+// Ejecutar la verificación cada 5 minutos
+setInterval(checkIP, 30 * 60 * 1000);
+
+checkIP();
 
 // Ejecutar una vez al inicio
-// checkIP();
-module.exports = { checkIP: checkIP };
+module.exports = { checkIP };

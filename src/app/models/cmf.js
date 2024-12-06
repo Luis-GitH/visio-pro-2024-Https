@@ -1,7 +1,7 @@
 
 const f = require('../../modules/funcionesLog')
 pool = require("../../config/db");
-var moment = require('moment'); // require
+var dayjs = require('dayjs'); // require
 const date_ES = "YYYY-MM-DD HH:mm:ss";
 
 module.exports = {
@@ -14,7 +14,7 @@ module.exports = {
       const sql = "SELECT * FROM cmfs";
       rows = await conn.query(sql);
     } catch (err) {
-      f.loger(`error en cmfs.findAll():, ${err.text}`);
+      f.loger(`error en cmfs.findAll():, ${err.text}`,'cmf');
     } finally {
       if (conn) conn.end();
     }
@@ -34,7 +34,7 @@ module.exports = {
                   GROUP BY centroCmf`;
       rows = await conn.query(sql);
     } catch (e) {
-      f.loger( `Error en Cmf.subidos() ${e.text}`)
+      f.loger( `Error en Cmf.subidos() ${e.text}`,'cmf')
     } finally {
       if (conn) conn.end();
     }
@@ -69,9 +69,9 @@ module.exports = {
     try {
       conn = await pool.fetchConn();
       const res = await conn.query("DELETE FROM cmfs WHERE cmf = '" + excel + "'");
-      f.loger(`cmf.DELETE ', ${excel} - ${JSON.stringify(res)} `, 'c');
+      f.loger(`cmf.DELETE ', ${excel} - ${JSON.stringify(res)} `,'cmf');
     } catch (e) {
-      f.loger(`Error en cmf.DELETE', ${e.text}`);
+      f.loger(`Error en cmf.DELETE', ${e.text}`,'cmf');
     }finally{
       if (conn) conn.end();
     }
@@ -84,11 +84,11 @@ module.exports = {
     try {
       conn = await pool.fetchConn();
       const res = await conn.query(sql);
-      // f.loger(`cmf.addCmf( ${newCmf[1]}) info: ${JSON.stringify(res)}`, 'c'); 
+      // f.loger(`cmf.addCmf( ${newCmf[1]}) info: ${JSON.stringify(res)}`,'cmf'); 
     } catch (e) {
       f.loger(`CMF addCmfd() NO funciona
             SQL: ${sql} 
-            ${e}`);
+            ${e}`,'cmf');
      
     }finally{
       if (conn) conn.end();

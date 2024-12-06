@@ -14,7 +14,7 @@ module.exports = {
   async fetchConn() {
     let conn = await pool.getConnection();
     
-    // f.loger(`Total conn/Actives/Idles: ${pool.totalConnections()} ${pool.activeConnections()} ${pool.idleConnections()}`,'t');
+    // f.loger(`Total conn/Actives/Idles: ${pool.totalConnections()} ${pool.activeConnections()} ${pool.idleConnections()}`,'trace');
 
     return conn;
   }

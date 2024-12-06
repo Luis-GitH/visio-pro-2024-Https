@@ -1,16 +1,12 @@
 const process = require("process");
 
-const env_node = process.env.NODE_ENV || "produccion"; // prod||dev
-console.log(
-    new Date().toISOString(),
-    "process.env.NODE_ENV=",
-    env_node
-);
+const env_node = process.env.NODE_ENV || "desarrollo"; // prod||dev
+console.log(new Date().toISOString(), ` Ejecutando import en modo ${env_node}`);
 const XLSX = require("xlsx");
 // const f = require("./funcionesLog.js");
 const fs = require("fs");
 var crypto = require("crypto");
-const moment = require("moment");
+const dayjs = require("dayjs");
 const date_ES = "YYYY-MM-DD HH:mm:ss";
 
 const nivelModel = require("../app/models/alcanceMensual");
@@ -67,14 +63,16 @@ async function procesarTodoUpload() {
                 if (archivo.substring(0, 3) === "CMF") {
                     const i = archivo.lastIndexOf("_2") + 1;
                     const yearMes =
-                        archivo.substring(i, i + 4) + "-" + archivo.substring(i + 4, i + 6);
+                        archivo.substring(i, i + 4) +
+                        "-" +
+                        archivo.substring(i + 4, i + 6);
                     cmfArr = [
                         "upload", // quien lo sube
                         archivo.substring(4, 12), // centroCmf que se ha logueado
                         archivo,
                         yearMes,
                         "Subido",
-                        moment().format(date_ES),
+                        dayjs().format(date_ES),
                     ];
                     try {
                         CmfModel.addCmf(cmfArr);
@@ -87,7 +85,11 @@ async function procesarTodoUpload() {
                         );
                     }
                     try {
-                        await importaAlcanceMensual(UPLOAD, PROCESADOS, archivo);
+                        await importaAlcanceMensual(
+                            UPLOAD,
+                            PROCESADOS,
+                            archivo
+                        );
                         resultado++;
                     } catch (error) {
                         console.log(new Date().toISOString(), error);
@@ -135,8 +137,11 @@ async function importaAlcanceMensual(upload, procesados, sLibro) {
     for (let im = 0; im < modulo[0].length; im++) {
         const ws = wb.Sheets[modulo[0][im]];
         if (ws == undefined) {
-            f.loger(`En '${sLibro}' 
-            no está la hoja: ${modulo[0][im]}`);
+            f.loger(
+                `En '${sLibro}' 
+            no está la hoja: ${modulo[0][im]}`,
+                "niveles"
+            );
             continue;
         }
         if (ws == undefined) return; // no hay mas hojas
@@ -153,12 +158,10 @@ async function importaAlcanceMensual(upload, procesados, sLibro) {
                 sCentro
             );
         let xCentro;
-        // console.log(new Date().toISOString(),'env_node: ', );
+        // encriptamos si estamos en produccion', );
         if (env_node === "produccion") {
-            console.log(new Date().toISOString(), "scentro estamos en produccion");
             xCentro = crypto.createHash("md5").update(sCentro).digest("hex");
         } else {
-            console.log(new Date().toISOString(), "estamos en desarrollo");
             xCentro = sCentro;
         }
         // fila 15 cabecera de meses
@@ -184,20 +187,26 @@ async function importaAlcanceMensual(upload, procesados, sLibro) {
         for (let i = 16; i < 900; i += 2) {
             try {
                 if (ws["B" + i] === undefined) {
-                    // f.loger(`Llegamos al final de la hoja en: ${sLibro}, hoja: ${modulo[1][im]}, celda: B${i}`)
+                    // f.loger(`Llegamos al final de la hoja en: ${sLibro}, hoja: ${modulo[1][im]}, celda: B${i}`,'niveles')
                     break;
                 }
                 nknombre = ws["B" + i].v;
                 if (nknombre === "BAJAS DE ALUMNOS:") continue;
                 if (nknombre === "") break;
                 if (env_node === "produccion") {
-                    nknombre = crypto.createHash("md5").update(nknombre).digest("hex");
+                    //  encriptamos si estamos en procuccion
+                    nknombre = crypto
+                        .createHash("md5")
+                        .update(nknombre)
+                        .digest("hex");
                 }
             } catch (e) {
-                // f.loger(e.text)
+                // f.loger(e.text,'niveles')
                 f.loger(
-                    `Error en: ${sLibro}, hoja: ${modulo[1][im]
-                    }, celda: B${i}, nknombre typo ${typeof nknombre}`
+                    `Error en: ${sLibro}, hoja: ${
+                        modulo[1][im]
+                    }, celda: B${i}, nknombre typo ${typeof nknombre}`,
+                    "niveles"
                 );
                 // salimos no hay nombre válido hemos llegado al final
                 //cambiamos por undefined
@@ -219,13 +228,12 @@ async function importaAlcanceMensual(upload, procesados, sLibro) {
                 try {
                     if (ws[mes + i].v === "'") {
                         f.loger(
-                            `Celda vacia: ${sLibro}, hoja: ${modulo[1][im]}, celda: ${mes}${i}) `
+                            `Celda vacia: ${sLibro}, hoja: ${modulo[1][im]}, celda: ${mes}${i}) `,
+                            "niveles"
                         );
                         tmp = " ";
                     } else {
-
                         switch (process.env.TABLET) {
-
                             case "0":
                                 // se extraen los alumnos sin tablet hojas > 0
                                 if (ws[mes + (i + 1)].v > 0) {
@@ -277,19 +285,22 @@ async function importaAlcanceMensual(upload, procesados, sLibro) {
                         );
                     }
                     tmp = " ";
-
                 }
-
 
                 aMes[n] = tmp;
                 if (bDebug)
-                    console.log(new Date().toISOString(), "aMes[", n, "]:" + aMes[n]);
+                    console.log(
+                        new Date().toISOString(),
+                        "aMes[",
+                        n,
+                        "]:" + aMes[n]
+                    );
                 n++;
             });
             if (aMes.length > 0) {
                 data = [];
                 data = [xCentro, modulo[1][im], nknombre, nKinicio, ...aMes];
-                data.push(moment().format(date_ES));
+                data.push(dayjs().format(date_ES));
                 //////// actualizamos la base de datos de alcanceMensual
                 nivelModel.alcanceMesUpdate(alcance, data);
             }
@@ -299,7 +310,7 @@ async function importaAlcanceMensual(upload, procesados, sLibro) {
     try {
         fs.renameSync(upload + sLibro, procesados + sLibro);
     } catch (error) {
-        f.loger(error);
+        f.loger(error, "niveles");
     }
 }
 

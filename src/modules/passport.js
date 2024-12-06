@@ -38,12 +38,12 @@ module.exports = function (passport) {
         return done(err);
       }
       if (!rows.length) {
-        f.loger(`Centro erroneo - Centro: ${codigo} pwd: ${password}`);
+        f.loger(`Centro erroneo - Centro: ${codigo} pwd: ${password}`,'login');
         return done(null, false, req.flash('loginMessage', 'Centro no encontrado.')); // req.flash is the way to set flashdata using connect-flash
       }
       // if the user is found but the password is wrong
       if (!(helpers.matchPassword(password, rows[0].password))) {
-        f.loger(`Clave erronea -- Centro: ${codigo} pwd: ${password}`)
+        f.loger(`Clave erronea -- Centro: ${codigo} pwd: ${password}`,'login')
         return done(null, false, req.flash('loginMessage', 'Oops! Clave equivocada.')); // create the loginMessage and save it to session as flashdata
       }
       
