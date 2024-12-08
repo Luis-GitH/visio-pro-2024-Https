@@ -1,31 +1,10 @@
-// const checkIP = require("./src/modules/ipModule.js");
-const { enviarCorreo } =require( "./src/modules/eMailModule");
+const dayjs=require('dayjs')
 
-enviarCorreo(
-    "info",
-    "informe de subida correcto",
-    "se ha enviado este mensqaje",
-);
-
-
-enviarCorreo(
-    "produccion",
-    "informe de subida correcto",
-    "se ha enviado este mensqaje",
-);
-
-
-enviarCorreo(
-    "desarrollo",
-    "informe de subida correcto",
-    "se ha enviado este mensqaje",
-);
-
-
-enviarCorreo(
-    "Alerta",
-    "informe de subida correcto",
-    "se ha enviado este mensqaje",
-);
-
-
+function FechaLog(inputDate) {
+    // Determinar la fecha a usar
+    const retFecha=  inputDate ? dayjs(inputDate) : dayjs(); // Usar fecha proporcionada o la actual
+    return retFecha.format("YYYY-MM-DD HH:mm:ss")
+}
+console.log(`${FechaLog()}`);
+console.log(FechaLog());
+console.log(FechaLog(Date()));

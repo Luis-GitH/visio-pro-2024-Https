@@ -137,7 +137,7 @@ module.exports = (app, passport) => {
     });
 
     // logout
-    app.get("/logout", (req, res) => {
+    app.get("/logout", (req, res, next) => {
         // si se han seleccionado excel, enviamos notificación por correo
         const bDebug = false;
         let cmfsAtratar = [];
@@ -153,8 +153,15 @@ module.exports = (app, passport) => {
                 req.user.nombreCentro,
                 "Salida sin subir CMFs",
             ]);
-            req.logout();
-            res.redirect("/");
+            //req.logout();
+            //res.redirect("/");
+            //return;
+            req.logout((err) => {
+                if (err) {
+                    return next(err); // Manejar el error en el middleware de errores
+                }
+                res.redirect("/"); // Redirigir al usuario después del cierre de sesión
+            });
             return;
         }
         if (uploadedFiles[req.user.codigo]) {
@@ -185,11 +192,17 @@ module.exports = (app, passport) => {
         }
         procesarUpload(req.user.codigo, cmfsAtratar);
         // f.loger('Salida user: ' + req.user.codigo, 'login'
-        req.logout();
-        res.redirect("/");
+        // req.logout();
+        // res.redirect("/");
+        req.logout((err) => {
+            if (err) {
+                return next(err); // Manejar el error en el middleware de errores
+            }
+            res.redirect("/"); // Redirigir al usuario después del cierre de sesión
+        });
     });
 
-    // logout
+    // fin de logout
     app.get("/upload", isLoggedInMiddleware, async (req, res) => {
         try {
             // para sincroniacion rapida
@@ -351,12 +364,12 @@ module.exports = (app, passport) => {
                     excel,
                     mes1,
                     "Subido",
-                    dayjs().format(date_ES),
+                    f.fechaLog(), //   dayjs().format(date_ES),
                 ];
                 const resultado = await cmfModel.addCmf(cmfArr);
 
                 console.log(
-                    new Date().toISOString(),
+                    f.fechaLog(), //new Date().toISOString(),
                     "subidos:",
                     req.user.codigo,
                     ":",

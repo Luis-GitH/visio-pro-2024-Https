@@ -6,6 +6,10 @@ node_modules
 
 # Ignora todos los archivos de Excel
 *.xlsx
+*.xlsm
+procesados/
+recogidos/
+upload/
 
 # Ignora los archivos relacionados a API keys
 .env
@@ -14,4 +18,5 @@ node_modules
 .sass-cache
 
 # ignora los logs
-*.log
+logs/
+.log

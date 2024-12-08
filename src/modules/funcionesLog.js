@@ -1,6 +1,11 @@
 const dayjs = require("dayjs"); // require
 const fs = require("fs");
 
+function fechaLog(inputDate) {
+    // Determinar la fecha a usar
+    const retFecha = inputDate ? dayjs(inputDate) : dayjs(); // Usar fecha proporcionada o la actual
+    return retFecha.format("YYYY-MM-DD HH:mm:ss");
+}
 // func = 'd'-> database.log, 'l' general 'x' csv
 /**
  * Función para escribir en el loger en el directorio de logs
@@ -81,4 +86,4 @@ function getNivel(cadena) {
     }
 }
 
-module.exports = { loger }; //, getNivel: getNivel };
+module.exports = { fechaLog, loger }; //, getNivel: getNivel };
