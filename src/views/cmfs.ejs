@@ -1,8 +1,8 @@
-<% include partials/head %>
+<%- include ('partials/head') %>
   </head>
 
   <body>
-    <% include partials/header %>
+    <%- include ('partials/header') %>
 
       <div class="container-fluid">
         <h5 class="text-center"><a class="btn btn-primary" href="/panel">Volver</a></h5>
@@ -41,7 +41,7 @@
                         <%= cmfs[i].estado %>
                       </td>
                       <td>
-                        <%= dayjs(cmfs[i].fecha).format(date_ES) %>
+                        <%= fechaLog(cmfs[i].fecha) %>
                       </td>
                     </tr>
                     <% } %>
@@ -52,7 +52,7 @@
           <div id="contenedorForm"></div>
         </div>
       </div>
-      <% include partials/footer %>
+      <%- include ('partials/footer') %>
       
         <script src="js/tblUtils.js"></script>
        <!--  <script src="js/funcionesTbl.js"></script> -->
