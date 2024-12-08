@@ -11,7 +11,7 @@ const jConfigEmail = {
 };
 /**
  * Envía un correo electrónico usando Nodemailer.
- * @param {string} deQuien - info, desarrollo, produccion, Alerta.
+ * @param {string} deQuien - info, development, production, Alerta.
  * @param {string} asunto - Asunto del correo.
  * @param {string} Mensaje - Texto o cuerpo del correo.
  * @param {Array<Object>} [adjuntos] - Documentos adjuntos (opcional).
@@ -26,10 +26,10 @@ async function enviarCorreo(deQuien, Asunto, Mensaje, adjuntos = []) {
         case "info": // informacion evolucion y eventos normales
             aQuien = "salvador.lopez@outlook.com";
             break;
-        case "desarrollo": // errores o cualquier detalle de mal funcionamiento
+        case "development": // errores o cualquier detalle de mal funcionamiento
             aQuien = "salvador.lopez@outlook.com";
             break;
-        case "produccion": // correo a Salva con informacióna tratar
+        case "production": // correo a Salva con informacióna tratar
             aQuien = "salvador.lopez@outlook.com";
             break;
         case "Alerta": // correo a Sergio y a mi por cambio de IP

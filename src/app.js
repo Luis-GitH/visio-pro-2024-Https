@@ -1,6 +1,4 @@
 require("dotenv").config();
-var dayjs = require("dayjs"); // require
-var date_ES = "YYYY-MM-DD HH:mm:ss";
 
  const f = require("./modules/funcionesLog.js");
 
@@ -16,9 +14,9 @@ const app = express(),
 require("./modules/passport")(passport);
 
 // settings
-app.locals.dayjs = dayjs;
+
 app.locals.fechaLog=f.fechaLog;
-app.locals.date_ES = date_ES;
+
 app.set("port", process.env.SERVER_PORT || 3000);
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");

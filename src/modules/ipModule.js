@@ -5,8 +5,8 @@ const { enviarCorreo } = require("./eMailModule");
 const fs = require("fs");
 const f = require("./funcionesLog");
 
-const env_node = process.env.NODE_ENV || "produccion"; // produccion||desarrollo
-f.loger(`ARRANQUE DEL SERVIDOR: nuevo proceso en ${env_node}`,'info');
+const env_node = process.env.NODE_ENV || "development"; // production||development
+f.loger(`ARRANQUE DEL SERVIDOR: nuevo proceso en ${env_node}`, "trace");
 
 let lastIP = "";
 
@@ -16,16 +16,15 @@ async function getPublicIP() {
         const response = await axios.get("https://api.ipify.org?format=json");
         return response.data.ip;
     } catch (error) {
-        f.loger("Error al obtener la IP:" + error, 'err');
+        f.loger("Error al obtener la IP:" + error, "err");
         enviarCorreo(
-            "desarrollo",
+            "development",
             "OJO, no se puede conseguir la IP",
             "ipModule.getPublicIP"
         );
         return null;
     }
 }
-
 
 // Función principal
 async function checkIP() {

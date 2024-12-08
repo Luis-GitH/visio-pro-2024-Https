@@ -1,13 +1,13 @@
 const process = require("process");
 
-const env_node = process.env.NODE_ENV || "desarrollo"; // prod||dev
-console.log(new Date().toISOString(), ` Ejecutando import en modo ${env_node}`);
+const env_node = process.env.NODE_ENV || "development"; // prod||dev
+console.log( ` Ejecutando import en modo ${process.env.NODE_ENV}`);
 const XLSX = require("xlsx");
-// const f = require("./funcionesLog.js");
+const f = require("./funcionesLog.js");
 const fs = require("fs");
 var crypto = require("crypto");
-const dayjs = require("dayjs");
-const date_ES = "YYYY-MM-DD HH:mm:ss";
+// const dayjs = require("dayjs");
+// const date_ES = "YYYY-MM-DD HH:mm:ss";
 
 const nivelModel = require("../app/models/alcanceMensual");
 const CmfModel = require("../app/models/cmf");
@@ -72,7 +72,7 @@ async function procesarTodoUpload() {
                         archivo,
                         yearMes,
                         "Subido",
-                        dayjs().format(date_ES),
+                        f.fechaLog(), //  dayjs().format(date_ES),
                     ];
                     try {
                         CmfModel.addCmf(cmfArr);
@@ -158,8 +158,8 @@ async function importaAlcanceMensual(upload, procesados, sLibro) {
                 sCentro
             );
         let xCentro;
-        // encriptamos si estamos en produccion', );
-        if (env_node === "produccion") {
+        // encriptamos si estamos en production', );
+        if (env_node === "production") {
             xCentro = crypto.createHash("md5").update(sCentro).digest("hex");
         } else {
             xCentro = sCentro;
@@ -193,7 +193,7 @@ async function importaAlcanceMensual(upload, procesados, sLibro) {
                 nknombre = ws["B" + i].v;
                 if (nknombre === "BAJAS DE ALUMNOS:") continue;
                 if (nknombre === "") break;
-                if (env_node === "produccion") {
+                if (env_node === "production") {
                     //  encriptamos si estamos en procuccion
                     nknombre = crypto
                         .createHash("md5")
@@ -300,7 +300,7 @@ async function importaAlcanceMensual(upload, procesados, sLibro) {
             if (aMes.length > 0) {
                 data = [];
                 data = [xCentro, modulo[1][im], nknombre, nKinicio, ...aMes];
-                data.push(dayjs().format(date_ES));
+                data.push(f.fechaLog()); // dayjs().format(date_ES)
                 //////// actualizamos la base de datos de alcanceMensual
                 nivelModel.alcanceMesUpdate(alcance, data);
             }

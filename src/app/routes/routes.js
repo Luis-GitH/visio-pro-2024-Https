@@ -4,8 +4,8 @@ const f = require("../../modules/funcionesLog"),
     cmfModel = require("../models/cmf"),
     loginModel = require("../models/login");
 
-var dayjs = require("dayjs"); // require
-const date_ES = "YYYY-MM-DD HH:mm:ss";
+// var dayjs = require("dayjs"); // require
+// const date_ES = "YYYY-MM-DD HH:mm:ss";
 
 const fs = require("fs");
 const {
@@ -28,6 +28,7 @@ const storage = multer.diskStorage({
 const { render } = require("ejs");
 const helpers = require("../../modules/helpers");
 const { DefaultDeserializer } = require("v8");
+const SendmailTransport = require("nodemailer/lib/sendmail-transport");
 
 const upload = multer({
     storage: storage, // en las new versiones se puede usar storage solo
@@ -412,7 +413,7 @@ module.exports = (app, passport) => {
             try {
                 await sql2excel();
                 enviarCorreo(
-                    "produccion",
+                    "production",
                     `Actualización de los datos de alcance mensual`,
                     `<h1>Hola ${req.user.nombre}, </h1><p> adjunto el excel actualizado!</p>`,
                     [
@@ -421,33 +422,6 @@ module.exports = (app, passport) => {
                         },
                     ]
                 );
-                const email = {
-                    from: process.env.MAIL_ORIGEN, // Sender address
-                    to: `${req.user.email}`, // List of recipients
-                    subject: `Actualización de los datos de alcance mensual`, // Subject line
-                    html: `<h1>Hola ${req.user.nombre}, </h1><p> adjunto el excel actualizado!</p>`,
-                    attachments: [
-                        {
-                            path: "mysql2excel.xlsx",
-                        },
-                    ],
-                };
-                let createTransport = nodemailer.createTransport(jConfigEmail);
-                createTransport.sendMail(email, function (error, info) {
-                    if (error) {
-                        console.log(
-                            new Date().toISOString(),
-                            "Error al enviar email",
-                            error
-                        );
-                    } else {
-                        console.log(
-                            new Date().toISOString(),
-                            "Correo enviado correctamente"
-                        ); //, info);
-                    }
-                    createTransport.close();
-                });
 
                 resultado = true;
             } catch (e) {
@@ -535,7 +509,7 @@ module.exports = (app, passport) => {
             helpers.encryptPassword(req.body.clave),
             role,
             "Alta", // se modifica en destino con valor alta o actualizado
-            dayjs().format(date_ES),
+           f.fechaLog(), // dayjs().format(date_ES),
         ];
         const resultado = await userModel.addUsuario(newUser);
         res.send(resultado);
