@@ -11,7 +11,7 @@ module.exports = {
       const sql = "SELECT * FROM alcanceMensual";
       rows = await conn.query(sql);
     } catch (e) {
-      f.loger('Error en alcanceMensual.findAll():' + e.text,'niveles');
+      f.loger('Error db1 en alcanceMensual.findAll():' + e.text,'db');
       rows = e.text;
     } finally {
       if (conn) conn.end()
@@ -50,7 +50,7 @@ module.exports = {
       result.push(rows[0].numero);
     
     } catch (err) {
-      if (bDebug) f.loger('resumenAlumnos() error' + e.text, 'niveles');
+      if (bDebug) f.loger('Error db2 resumenAlumnos() error' + e.text, 'db');
       throw err;
     
     } finally {
@@ -69,7 +69,7 @@ module.exports = {
       conn = await pool.fetchConn();
       rows = await conn.query(`SELECT ${fields} FROM alcanceMensual WHERE ${where}`);
     } catch (e) {
-      if (bDebug) f.loger(`Error en queryWhere( ${where} ) con error: ${e.text}`,'niveles');
+      if (bDebug) f.loger(`Error db3 en queryWhere( ${where} ) con error: ${e.text}`,'db');
     }finally{
       if (conn) conn.end();
     }
@@ -107,7 +107,7 @@ module.exports = {
       conn = await pool.fetchConn();
       await conn.query(`INSERT INTO alcanceMensual (${fields}) VALUES ( ${values} ) ON DUPLICATE KEY UPDATE ${set}`);
     } catch (e) {
-      f.loger(`Error en alcanceMesUpdate: ${e.text,'niveles'}
+      f.loger(`Error db4 en alcanceMesUpdate: ${e.text,'db'}
       values: ${values}`);
     }finally{
       if (conn) conn.end();

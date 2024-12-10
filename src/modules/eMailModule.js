@@ -54,7 +54,7 @@ async function enviarCorreo(deQuien, Asunto, Mensaje, adjuntos = []) {
 
         const ret = await transporte.sendMail(emailOptions);
         loger(
-            `Envio de correo correcto: \n\t\t de: ${From}, \n\t\t a:${aQuien}, \n\t\t Asunto: ${Asunto}\n`,
+            `Envio de correo ok, De: ${deQuien} a:${aQuien}, \n\t\t Asunto: ${Asunto}\n`,
             "info"
         );
         transporte.close();
@@ -63,7 +63,7 @@ async function enviarCorreo(deQuien, Asunto, Mensaje, adjuntos = []) {
             `ERROR en envio eMail: \n\t\t de: ${deQuien}, \n\t\t a:${aQuien}, \n\t\t Asunto${Asunto}, \n\t\t ${error}\n`,
             "error"
         );
-    } 
+    }
 }
 
 module.exports = { enviarCorreo: enviarCorreo };

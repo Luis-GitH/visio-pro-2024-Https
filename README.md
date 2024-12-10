@@ -2,9 +2,9 @@
 
 ## **Arranque con pm2**
 
-pm2 start './src/config/ecosystem.config.js'  
+pm2 start ./src/config/ecosystem.config.js --env dev  
 
-pm2 start './src/config/ecosystem.config.js'  
+pm2 start ./src/config/ecosystem.config.js --env pro
 
 ### comandos utiles
 
@@ -37,4 +37,8 @@ mysql -u visiona -p centros_2024 < dbs.sql;
 mysql -u visiona -p centros_2024 < dbs.sql;
 
 SHOW DATABASES;  
-SELECT user from mysql.user;  
+SELECT user from mysql.user;
+
+se quita mysql2 y mysql2-promise
+
+pendiente grabar las sesiones para evitar tenerlas en memoria

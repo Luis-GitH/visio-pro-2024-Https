@@ -13,27 +13,31 @@ function fechaLog(inputDate) {
  * @param {string} log - db: databases.log,
         err: errores.log,
         trace: trace.log,
-        niveles: alcanceMes.log,
         cmf: cmfs.log,
         user: users.log,
         login: logins.log,
         info: info.log;
+        debug: debug.log;
 */
 function loger(texto, log) {
-    const fecha = dayjs().format("YYYY/MM/DD HH:mm:ss "),
-        db = "logs/databases.log",
+    const fecha = dayjs().format("YYYY/MM/DD HH:mm:ss"),
+        db = "logs/databases.log", // errores de accesos y consultas DataBase
         er = "logs/errores.log",
         trace = "logs/trace.log",
-        niveles = "logs/AlcanceMes.log",
         cmf = "logs/cmfs.log",
         user = "logs/users.log",
         login = "logs/logins.log",
         info = "logs/info.log";
+        debug = "logs/debug.log"
 
     try {
         switch (log) {
+            case "debug": // debug Log
+                fs.appendFileSync(debug, `${fecha}  ${texto} \n`);
+                break;
+
             case "cmf": // cmf Log
-                fs.appendFileSync(cmf, fecha + " " + texto + `\n`);
+                fs.appendFileSync(cmf, `${fecha}  ${texto} \n`);
                 break;
 
             case "db": // database log
@@ -43,12 +47,8 @@ function loger(texto, log) {
             case "user": // model.user log
                 fs.appendFileSync(user, `${fecha}  ${texto} \n`);
                 break;
-
-            case "niveles": // AlcanceMes Log
-                fs.appendFileSync(niveles, `${fecha}  ${texto} \n`);
-                break;
-
-            case "login": // Login Log
+           
+            case "login": // Login Log de los errores
                 fs.appendFileSync(login, `${fecha}  ${texto} \n`);
                 break;
 
@@ -71,19 +71,4 @@ function loger(texto, log) {
     }
 }
 
-function getNivel(cadena) {
-    if (cadena == "") return " ";
-    for (let i = 1; i < cadena.length; i++) {
-        if (cadena[i] >= 0 || cadena[i] == " ") {
-            // console.log(new Date().toISOString(),"el nivel es: ", cadena.substr(0, i));
-            return cadena.substr(0, i);
-        }
-
-        if (cadena.length <= 3) {
-            // console.log(new Date().toISOString(),"el nivel basico es: ", cadena);
-            return cadena;
-        }
-    }
-}
-
-module.exports = { fechaLog, loger }; //, getNivel: getNivel };
+module.exports = { fechaLog, loger }; 

@@ -1,6 +1,6 @@
 require("dotenv").config();
 
- const f = require("./modules/funcionesLog.js");
+const f = require("./modules/funcionesLog.js");
 
 const express = require("express"),
     path = require("path"),
@@ -9,13 +9,24 @@ const express = require("express"),
 
 const app = express(),
     cookieParser = require("cookie-parser"),
-    session = require("express-session");
-
+    session = require("express-session"),
+    mariadb = require("mariadb"),
+    MySQLStore = require("express-mysql-session")(session);
 require("./modules/passport")(passport);
+// Configuración de la base de datos
+const dbOptions = {
+    host: 'localhost',
+    user: 'visiona',
+    password: '1337',
+    database: 'centros_2024',
+};
+
+// Crea el almacenamiento de sesiones usando MariaDB
+const sessionStore = new MySQLStore(dbOptions);
 
 // settings
 
-app.locals.fechaLog=f.fechaLog;
+app.locals.fechaLog = f.fechaLog;
 
 app.set("port", process.env.SERVER_PORT || 3000);
 app.set("views", path.join(__dirname, "views"));
@@ -27,11 +38,24 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 // required for passport
 app.use(
+    // session({
+    //     secret: process.env.KEY,
+    //     resave: true, // reiniciar y guardar
+    //     saveUninitialized: true, //guardar obj vacio
+    // })
     session({
-        secret: process.env.KEY,
-        resave: true, // reiniciar y guardar
-        saveUninitialized: true, //guardar obj vacio
-    })
+        key: 'visionaSesionCokie', // Nombre de la cookie de sesión
+        secret: process.env.KEY, // Cambia esto por una clave secreta segura
+        store: sessionStore,
+        resave: false, // No guarda la sesión si no se modifica
+        saveUninitialized: false, // No guarda sesiones vacías
+        cookie: {
+            secure: true, // Solo en HTTPS
+            httpOnly: true, // Evita acceso desde JS en el cliente
+            sameSite: 'strict', // Protege contra CSRF
+            maxAge: 3600000, // Duración de la cookie
+        },
+      })
 );
 app.use(flash());
 app.use(passport.initialize());

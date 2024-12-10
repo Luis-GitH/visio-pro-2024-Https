@@ -1,4 +1,4 @@
-const f = require("../../modules/funcionesLog"),
+const { fechaLog, loger } = require("../../modules/funcionesLog"),
     nivelesModel = require("../models/alcanceMensual"),
     userModel = require("../models/user"),
     cmfModel = require("../models/cmf"),
@@ -27,8 +27,8 @@ const storage = multer.diskStorage({
 
 const { render } = require("ejs");
 const helpers = require("../../modules/helpers");
-const { DefaultDeserializer } = require("v8");
-const SendmailTransport = require("nodemailer/lib/sendmail-transport");
+// const { DefaultDeserializer } = require("v8");
+// const SendmailTransport = require("nodemailer/lib/sendmail-transport");
 
 const upload = multer({
     storage: storage, // en las new versiones se puede usar storage solo
@@ -71,7 +71,7 @@ module.exports = (app, passport) => {
 
     //// acceso a db
     app.post("/autenticar", (req, res) => {
-        f.loger(
+        loger(
             `Acceso a DB User: ${req.body.usuario} Hostname: ${req.hostname} Method/Url: ${req.method}${req.url}  Ip: ${req.ip}`,
             "db"
         );
@@ -90,7 +90,7 @@ module.exports = (app, passport) => {
                 token: token,
             });
         } else {
-            f.loger(
+            loger(
                 `OJO intento de acceso por /autenticar'+ user: ${req.body.usuario} pwd: ${req.user.pwd}`,
                 "login"
             );
@@ -142,21 +142,19 @@ module.exports = (app, passport) => {
         // si se han seleccionado excel, enviamos notificación por correo
         const bDebug = false;
         let cmfsAtratar = [];
-        if (bDebug)
+        /* if (bDebug)
             console.log(
                 new Date().toISOString(),
                 "llega el codigo",
                 req.user.codigo
-            );
+            ); */
         if (!uploadedFiles[req.user.codigo]) {
             loginModel.addLogin([
                 req.user.codigo,
                 req.user.nombreCentro,
                 "Salida sin subir CMFs",
             ]);
-            //req.logout();
-            //res.redirect("/");
-            //return;
+
             req.logout((err) => {
                 if (err) {
                     return next(err); // Manejar el error en el middleware de errores
@@ -177,12 +175,7 @@ module.exports = (app, passport) => {
                 texto += " ✸ " + uploadedFiles[req.user.codigo][i] + "\n";
                 cmfsAtratar.push(uploadedFiles[req.user.codigo][i]);
             }
-            if (bDebug)
-                console.log(
-                    new Date().toISOString(),
-                    "cmfsAtratar:",
-                    cmfsAtratar
-                );
+            if (bDebug) console.log("cmfsAtratar:", cmfsAtratar);
 
             uploadedFiles[req.user.codigo] = [];
             enviarCorreo(
@@ -192,7 +185,7 @@ module.exports = (app, passport) => {
             );
         }
         procesarUpload(req.user.codigo, cmfsAtratar);
-        // f.loger('Salida user: ' + req.user.codigo, 'login'
+        // loger('Salida user: ' + req.user.codigo, 'login'
         // req.logout();
         // res.redirect("/");
         req.logout((err) => {
@@ -208,10 +201,9 @@ module.exports = (app, passport) => {
         try {
             // para sincroniacion rapida
 
-            console.log(new Date().toISOString(), "entramos en upload");
             //		loginModel.addLogin([req.user.codigo, req.user.nombreCentro, 'Salida con CMFs subidos'])
             const resultado = await procesarTodoUpload();
-            // f.loger('Salida user: ' + req.user.codigo, 'login'
+            // loger('Salida user: ' + req.user.codigo, 'login'
 
             return res.render("upload", { resultado, error: false });
         } catch (error) {
@@ -229,11 +221,11 @@ module.exports = (app, passport) => {
         upload.single("file2load"),
         async (req, res) => {
             const bDebug = false;
-            if (bDebug)
-                console.log(
+            /* if (bDebug)
+                loger(
                     new Date().toISOString(),
                     " * * * * entramos en /files * * * *"
-                );
+                ); */
             if (req.file) {
                 const excel = req.file.filename;
                 const i = excel.indexOf("_202") + 1;
@@ -242,26 +234,24 @@ module.exports = (app, passport) => {
                     "-" +
                     excel.substring(i + 4, i + 6);
 
-                if (bDebug)
-                    console.log(
+                /*  if (bDebug)
+                    loger(
                         new Date().toISOString(),
                         "este es el mes a tratar: ",
                         mes1
-                    );
+                    ); */
 
                 // validamos que sea de octubre
                 // validamos que empiece por CMF
-                console.log(new Date().toISOString(), excel);
                 if (excel.substring(0, 3) != "CMF") {
-                    console.log(new Date().toISOString(), "estamos en mal cmf");
                     fs.unlink("upload/" + req.file.filename, (err) => {
-                        if (err) console.log(new Date().toISOString(), err);
+                        if (err) loger("Error upload1" + err, "err");
                         // if no error, file has been deleted successfully
-                        console.log(
+                        /*  console.log(
                             new Date().toISOString(),
                             "Borrado: ",
-                            excel
-                        );
+                            excel 
+                        );*/
                     });
                     res.render("download", {
                         user: req.user,
@@ -270,28 +260,27 @@ module.exports = (app, passport) => {
                         admin: isAdmin(req.user),
                     });
                     if (bDebug)
-                        console.log(
-                            new Date().toISOString(),
-                            "OJO hemos vuelto despues de no CMF",
-                            mes1
+                        loger(
+                            "OJO hemos vuelto despues de no CMF" + mes1,
+                            "err"
                         );
                     return;
                 }
                 if (["2024-10", "2023-10"].indexOf(mes1) == -1) {
                     // no es el mes lo borrmos y salimos
-                    if (bDebug)
-                        console.log(
+                    /* if (bDebug)
+                        loger(
                             new Date().toISOString(),
                             " - - - - ya estaba y lo borramos - - - - "
-                        );
+                        ); */
                     fs.unlink("upload/" + req.file.filename, (err) => {
                         if (err) throw err;
                         // if no error, file has been deleted successfully
-                        console.log(
+                        /*    console.log(
                             new Date().toISOString(),
                             "Borrado: ",
                             excel
-                        );
+                        ); */
                     });
                     res.render("download", {
                         user: req.user,
@@ -299,31 +288,20 @@ module.exports = (app, passport) => {
                         message: `El CMF: ${excel} seleccionado no es de octubre`,
                         admin: isAdmin(req.user),
                     });
-                    if (bDebug)
+                    /* if (bDebug)
                         console.log(
                             new Date().toISOString(),
                             "OJO hemos vuelto despues de NO OCTUBRE ",
                             mes1
-                        );
+                        ); */
                     return;
                 }
 
                 // Empezamoa desde aqui una vez validado el mes
-                if (bDebug)
-                    console.log(
-                        new Date().toISOString(),
-                        "verificado el mes: ",
-                        mes1
-                    );
-                // preparamos el registro de los CMFs subidos
-                // si esta vacio lo inicializamos y rellenamos con el file
-                // uploadedFiles[req.user.codigo] = []
+
                 if (!uploadedFiles[req.user.codigo]) {
-                    if (bDebug)
-                        console.log(
-                            new Date().toISOString(),
-                            "+++++ inicializmos uploadedFiles +++++"
-                        );
+                    // preparamos el registro de los CMFs subidos
+                    // si esta vacio lo inicializamos y rellenamos con el file
                     uploadedFiles[req.user.codigo] = [];
                 }
                 // validamos si ya se ha subido
@@ -337,24 +315,17 @@ module.exports = (app, passport) => {
                             message: `El CMF: ${excel} ya se ha subido`,
                             admin: isAdmin(req.user),
                         });
-                        if (bDebug)
+                        /*    if (bDebug)
                             console.log(
                                 new Date().toISOString(),
                                 "OJO hemos vuelto despues de duplicado ",
                                 excel
-                            );
+                            ); */
                         return;
                     }
                 }
                 // preprmos las variables para render
                 uploadedFiles[req.user.codigo].push(req.file.filename);
-                console.log(
-                    new Date().toISOString(),
-                    "uploadedFiles[user.codigo]: ",
-                    req.user.codigo,
-                    "->",
-                    uploadedFiles[req.user.codigo]
-                );
 
                 // var insertQuery = "INSERT INTO cmfs ( centro, nombre,mes) values ('" + req.user.codigo + "','" + excel + "','" + mes1 + "')";
                 // if (bDebug) console.log(new Date().toISOString(),insertQuery);
@@ -365,17 +336,9 @@ module.exports = (app, passport) => {
                     excel,
                     mes1,
                     "Subido",
-                    f.fechaLog(), //   dayjs().format(date_ES),
+                    fechaLog(),
                 ];
                 const resultado = await cmfModel.addCmf(cmfArr);
-
-                console.log(
-                    f.fechaLog(), //new Date().toISOString(),
-                    "subidos:",
-                    req.user.codigo,
-                    ":",
-                    uploadedFiles[req.user.codigo].length
-                );
                 // volvemos a download
             }
             res.render("download", {
@@ -398,7 +361,7 @@ module.exports = (app, passport) => {
             try {
                 data = await nivelesModel.resumenAlumnos();
             } catch (e) {
-                console.log(new Date().toISOString(), "error1", e);
+                loger(`error1  ${e}`, err);
             }
             res.render("panel", { data });
         }
@@ -425,7 +388,7 @@ module.exports = (app, passport) => {
 
                 resultado = true;
             } catch (e) {
-                console.log(new Date().toISOString(), "error Sql2Excel:  ", e);
+                loger("error Sql2Excel:  " + e, err);
                 resultado = true;
             }
             res.render("sql2e", { resultado });
@@ -441,12 +404,8 @@ module.exports = (app, passport) => {
             const bDebug = false;
             // let centros = [], error
             centros = await userModel.findAll();
-            if (bDebug)
-                console.log(
-                    new Date().toISOString(),
-                    "# centros:",
-                    centros.length
-                );
+
+            console.log("# centros:", centros.length);
             res.render("centros", {
                 centros,
                 message: req.flash("delete"),
@@ -461,8 +420,8 @@ module.exports = (app, passport) => {
         async function (req, res) {
             const bDebug = false;
             cmfs = await cmfModel.findAll();
-            if (bDebug)
-                console.log(new Date().toISOString(), "cmfs", cmfs.length);
+            /* if (bDebug)
+                console.log( "cmfs", cmfs.length); */
             res.render("cmfs", {
                 cmfs,
             });
@@ -476,7 +435,7 @@ module.exports = (app, passport) => {
         async function (req, res) {
             const bDebug = false;
             rows = await cmfModel.subidos();
-            if (bDebug) console.log(new Date().toISOString(), "subidos", rows);
+            /*  if (bDebug) console.log( "subidos", rows); */
             res.render("subidos", {
                 rows,
             });
@@ -509,7 +468,7 @@ module.exports = (app, passport) => {
             helpers.encryptPassword(req.body.clave),
             role,
             "Alta", // se modifica en destino con valor alta o actualizado
-           f.fechaLog(), // dayjs().format(date_ES),
+            fechaLog(), // dayjs().format(date_ES),
         ];
         const resultado = await userModel.addUsuario(newUser);
         res.send(resultado);
@@ -530,9 +489,8 @@ module.exports = (app, passport) => {
                 req.params.id,
                 function (err, centro) {
                     if (err) {
-                        console.log(new Date().toISOString(), err);
+                        loger(`Error edit1: ${err}`, "err");
                     } else {
-                        console.log(new Date().toISOString(), centro);
                         res.render("centros_edit", { centro });
                     }
                 }
