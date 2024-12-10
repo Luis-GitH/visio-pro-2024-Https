@@ -32,6 +32,8 @@ module.exports = {
     
     //const qEnglish = "SELECT count(DISTINCT alumno) as numero FROM alcanceMensual WHERE materia='E'"
     const qEnglish = "SELECT COUNT(IF( materia ='E', materia, NULL)) AS numero FROM alcanceMensual"
+    // cuarto elemento 
+    const qCmfs="SELECT COUNT(*) as numero FROM cmfs"
     let rows;
     let conn;
     try {
@@ -49,6 +51,9 @@ module.exports = {
       rows = await conn.query(qEnglish);
       result.push(rows[0].numero);
     
+      rows = await conn.query(qCmfs);
+      result.push(rows[0].numero);
+      
     } catch (err) {
       if (bDebug) f.loger('Error db2 resumenAlumnos() error' + e.text, 'db');
       throw err;

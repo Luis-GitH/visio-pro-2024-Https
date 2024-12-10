@@ -13,14 +13,10 @@ const app = express(),
     mariadb = require("mariadb"),
     MySQLStore = require("express-mysql-session")(session);
 require("./modules/passport")(passport);
-// Configuración de la base de datos
-const dbOptions = {
-    host: 'localhost',
-    user: 'visiona',
-    password: '1337',
-    database: 'centros_2024',
-};
 
+// Configuración de la base de datos
+const dbOptions = require('./config/dbOption.js');
+ 
 // Crea el almacenamiento de sesiones usando MariaDB
 const sessionStore = new MySQLStore(dbOptions);
 

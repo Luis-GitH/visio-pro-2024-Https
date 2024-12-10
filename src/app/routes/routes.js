@@ -405,7 +405,7 @@ module.exports = (app, passport) => {
             // let centros = [], error
             centros = await userModel.findAll();
 
-            console.log("# centros:", centros.length);
+            // console.log("# centros:", centros.length);
             res.render("centros", {
                 centros,
                 message: req.flash("delete"),
